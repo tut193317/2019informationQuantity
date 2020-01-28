@@ -64,7 +64,6 @@ public class Frequencer implements FrequencerInterface{
         // if suffix_i = suffix_j, it returns 0;   
 
         // ここにコードを記述せよ
-	
 	for(int k = 0; i+k < mySpace.length && j+k < mySpace.length; k++){
 	    if(i+k > mySpace.length){
 		return -1;
@@ -85,7 +84,9 @@ public class Frequencer implements FrequencerInterface{
 	    return 1;
 	}
 	
-	return 0;	
+	return 0;
+	
+
     }
 
     public void setSpace(byte []space) { 
@@ -101,7 +102,6 @@ public class Frequencer implements FrequencerInterface{
         // ここに、int suffixArrayをソートするコードを書け。
         // 　順番はsuffixCompareで定義されるものとする。
 	int temp = -1;
-	/*
 	for(int i = 0; i<space.length; i++){
 	    for(int j = space.length-1; j>=i+1; j--){
 		if(suffixCompare(suffixArray[i],suffixArray[j]) == 1){
@@ -111,48 +111,9 @@ public class Frequencer implements FrequencerInterface{
 		}
 	    }
 	}
-	*/
-	mySort(suffixArray,0,suffixArray.length-1);
 
 	//
 	
-    }
-
-    //For Refactering
-    private void mySort(int[] array, int left,int right){
-	 int pivot;
-
-	 if (suffixCompare(suffixArray[left],suffixArray[right]) == -1) {
-	     pivot = partition(array, left, right);
-	     mySort(array, left, pivot-1);   // pivotを境に再帰的にクイックソート
-	     mySort(array, pivot+1, right);
-	 }
-    }
-
-    private int partition (int array[], int left, int right) {
-	int i, j, pivot;
-	i = left;
-	j = right + 1;
-	pivot = left;   // 先頭要素をpivotとする
-
-	do {
-	    do { i++; } while (array[i] < array[pivot]);
-	    do { j--; } while (array[pivot] < array[j]);
-	    // pivotより小さいものを左へ、大きいものを右へ
-	    if (i < j) { swap(array[i], array[j]); }
-	} while (i < j);
-
-	swap(array[pivot], array[j]);   //pivotを更新
-
-	return j;
-    }
-
-    private void swap (int x, int y) {
-	int temp;    // 値を一時保存する変数
-
-	temp = x;
-	x = y;
-	y = temp;
     }
 
     // Suffix Arrayを用いて、文字列の頻度を求めるコード

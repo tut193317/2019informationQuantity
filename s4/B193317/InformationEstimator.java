@@ -44,9 +44,10 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	boolean [] partition = new boolean[myTarget.length+1];
 	int np;
 	np = 1<<(myTarget.length-1);
-	// System.out.println("np="+np+" length="+myTarget.length);
+        // System.out.println("np="+np+" length="+myTarget.length);
 	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
 
+	/*
 	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
 	    // binary representation of p forms partition.
 	    // for partition {"ab" "cde" "fg"}
@@ -61,26 +62,54 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	    // Compute Information Quantity for the partition, in "value1"
 	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
             double value1 = (double) 0.0;
-	    int end = 0;;
+	    int end = 0;
 	    int start = end;
 	    while(start<myTarget.length) {
-		// System.out.write(myTarget[end]);
-		end++;;
+	        // System.out.write(myTarget[end]);
+		end++;
 		while(partition[end] == false) { 
 		    // System.out.write(myTarget[end]);
 		    end++;
 		}
-		// System.out.print("("+start+","+end+")");
+		 System.out.print("("+start+","+end+")");
 		myFrequencer.setTarget(subBytes(myTarget, start, end));
 		value1 = value1 + iq(myFrequencer.frequency());
 		start = end;
 	    }
-	    // System.out.println(" "+ value1);
-
-	    // Get the minimal value in "value"
-	    if(value1 < value) value = value1;
+	     System.out.println(" "+ value1);
+	*/
+	    // Get the minimal value in "value"	
+	//if(value1 < value) value = value1;
+	int n = myTarget.length*(myTarget.length+1)/2;
+	double[]  infoQuant = new double[n]; //記憶用配列
+	//0-myTerget.length-1まで、最小構成単位の情報量
+	for(int i = 0; i < n; i++){
+	    if(0 <= i && i <myTarget.length){
+		myFrequencer.setTarget(subBytes(myTarget,i,i+1));
+		infoQuant[i] = iq(myFrequencer.frequency());
+	    }else{
+		infoQuant[i] = -1;
+	    }
 	}
-	return value;
+      
+	//以降の計算は保存しながら。データ構造上、infoQuant[myTarget.length-1](最後の要素)に答えが入るようにする。
+	    //新たに情報量を計算
+	    //最小構成単位の情報量の要素の和を計算
+	    //比較：最小値を入れる
+	/*
+	for(int k = 2; k < myTarget.length-1; k++){
+	    for(int j = 0; j < myTarget.length-1; j++){
+		
+		myFrequencer.setTarget(subBytes(myTarget,j,j+k)); //0 2,  1 3,  2 4
+		int inf = iq(myFrequencer.frequency());
+		
+		infoQuant[4] = Math.min( )
+	
+    
+		}
+	}
+	*/
+	return infoQuant[n-1];
     }
 
     public static void main(String[] args) {
