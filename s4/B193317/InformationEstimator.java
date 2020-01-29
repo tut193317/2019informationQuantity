@@ -2,6 +2,8 @@ package s4.B193317; // Please modify to s4.Bnnnnnn, where nnnnnn is your student
 import java.lang.*;
 import s4.specification.*;
 
+import java.util.Arrays;//for debug
+
 /* What is imported from s4.specification
 package s4.specification;
 public interface InformationEstimatorInterface{
@@ -20,34 +22,40 @@ public class InformationEstimator implements InformationEstimatorInterface{
     byte [] myTarget; // data to compute its information quantity
     byte [] mySpace;  // Sample space to compute the probability
     FrequencerInterface myFrequencer;  // Object for counting frequency
+	
+	double[][]  infoQuant; //記憶用配列
 
     byte [] subBytes(byte [] x, int start, int end) {
-	// corresponding to substring of String for  byte[] ,
-	// It is not implement in class library because internal structure of byte[] requires copy.
-	byte [] result = new byte[end - start];
-	for(int i = 0; i<end - start; i++) { result[i] = x[start + i]; };
-	return result;
+		// corresponding to substring of String for  byte[] ,
+		// It is not implement in class library because internal structure of byte[] requires copy.
+		byte [] result = new byte[end - start];
+		for(int i = 0; i<end - start; i++) { result[i] = x[start + i]; };
+		return result;
     }
 
     // IQ: information quantity for a count,  -log2(count/sizeof(space))
     double iq(int freq) {
-	return  - Math.log10((double) freq / (double) mySpace.length)/ Math.log10((double) 2.0);
+		return  - Math.log10((double) freq / (double) mySpace.length)/ Math.log10((double) 2.0);
     }
 
-    public void setTarget(byte [] target) { myTarget = target;}
+    public void setTarget(byte [] target) {
+		myTarget = target;
+		if(myTarget.length > 0)infoQuant = new double[myTarget.length][myTarget.length];
+	}
     public void setSpace(byte []space) { 
-	myFrequencer = new Frequencer();
-	mySpace = space; myFrequencer.setSpace(space); 
+		myFrequencer = new Frequencer();
+		mySpace = space; myFrequencer.setSpace(space); 
     }
 
     public double estimation(){
-	boolean [] partition = new boolean[myTarget.length+1];
-	int np;
-	np = 1<<(myTarget.length-1);
+		/*指数時間計算法
+		boolean [] partition = new boolean[myTarget.length+1];
+		int np;
+		np = 1<<(myTarget.length-1);
         // System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+		double value = Double.MAX_VALUE; // value = mininimum of each "value1".
 
-	/*
+	
 	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
 	    // binary representation of p forms partition.
 	    // for partition {"ab" "cde" "fg"}
@@ -77,40 +85,41 @@ public class InformationEstimator implements InformationEstimatorInterface{
 		start = end;
 	    }
 	     System.out.println(" "+ value1);
-	*/
+	
 	    // Get the minimal value in "value"	
 	//if(value1 < value) value = value1;
-	int n = myTarget.length*(myTarget.length+1)/2;
-	double[]  infoQuant = new double[n]; //記憶用配列
-	//0-myTerget.length-1まで、最小構成単位の情報量
-	for(int i = 0; i < n; i++){
-	    if(0 <= i && i <myTarget.length){
-		myFrequencer.setTarget(subBytes(myTarget,i,i+1));
-		infoQuant[i] = iq(myFrequencer.frequency());
-	    }else{
-		infoQuant[i] = -1;
-	    }
-	}
-      
-	//以降の計算は保存しながら。データ構造上、infoQuant[myTarget.length-1](最後の要素)に答えが入るようにする。
-	    //新たに情報量を計算
-	    //最小構成単位の情報量の要素の和を計算
-	    //比較：最小値を入れる
-	/*
-	for(int k = 2; k < myTarget.length-1; k++){
-	    for(int j = 0; j < myTarget.length-1; j++){
-		
-		myFrequencer.setTarget(subBytes(myTarget,j,j+k)); //0 2,  1 3,  2 4
-		int inf = iq(myFrequencer.frequency());
-		
-		infoQuant[4] = Math.min( )
-	
-    
-		}
-	}
 	*/
-	return infoQuant[n-1];
-    }
+	
+		for(int j = 0; j < myTarget.length; j++){
+			if(0 <= j && j <myTarget.length){
+			myFrequencer.setTarget(subBytes(myTarget,j,j+1));
+			infoQuant[0][j] = iq(myFrequencer.frequency());
+			}
+		}
+	
+		for(int i=1; i<myTarget.length; i++){
+			for(int j=0; j<myTarget.length-i; j++){
+				double value;
+				double value1;
+				
+				if(i==1){//二段目
+					myFrequencer.setTarget(subBytes(myTarget,j,j+2));
+					infoQuant[i][j] = Math.min(iq(myFrequencer.frequency()),infoQuant[0][j]+infoQuant[0][j+1]);
+				}
+				//三段目以降
+				if(i >= 2){
+					myFrequencer.setTarget(subBytes(myTarget,j,j+i+1));
+					value = iq(myFrequencer.frequency());//全体の情報量でvalueを初期化
+					for(int k = 0; k < myTarget.length-1; k++){//比較
+						value1 = infoQuant[k][0]+infoQuant[myTarget.length-(2+k)][k+1];
+						if(value1 < value) value = value1;
+					}
+					infoQuant[i][j]=value;
+				}
+			}
+		}
+		return infoQuant[myTarget.length-1][0];
+	}  
 
     public static void main(String[] args) {
 	InformationEstimator myObject;

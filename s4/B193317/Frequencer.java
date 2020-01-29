@@ -80,9 +80,9 @@ public class Frequencer implements FrequencerInterface{
 	}
 
 	if(mySpace.length - i < mySpace.length - j){
-	    return -1;
+	    return 1;//revise
 	}else if(mySpace.length - i > mySpace.length - j){
-	    return 1;
+	    return -1;//revise
 	}
 	
 	return 0;	
@@ -101,7 +101,7 @@ public class Frequencer implements FrequencerInterface{
         // ここに、int suffixArrayをソートするコードを書け。
         // 　順番はsuffixCompareで定義されるものとする。
 	int temp = -1;
-	/*
+	
 	for(int i = 0; i<space.length; i++){
 	    for(int j = space.length-1; j>=i+1; j--){
 		if(suffixCompare(suffixArray[i],suffixArray[j]) == 1){
@@ -111,14 +111,15 @@ public class Frequencer implements FrequencerInterface{
 		}
 	    }
 	}
-	*/
-	mySort(suffixArray,0,suffixArray.length-1);
+	
+	//mySort(suffixArray,0,suffixArray.length-1);
 
 	//
 	
     }
 
     //For Refactering
+	/*
     private void mySort(int[] array, int left,int right){
 	 int pivot;
 
@@ -153,7 +154,7 @@ public class Frequencer implements FrequencerInterface{
 	temp = x;
 	x = y;
 	y = temp;
-    }
+    }*/
 
     // Suffix Arrayを用いて、文字列の頻度を求めるコード
     // ここから、指定する範囲のコードは変更してはならない。
@@ -212,7 +213,7 @@ public class Frequencer implements FrequencerInterface{
         // "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
         //
         // ここに比較のコードを書け
-	
+
 	if(mySpace.length-i < k-j){
 	    return -1;
 	}
@@ -227,7 +228,6 @@ public class Frequencer implements FrequencerInterface{
 		return -1;
 	    }
 	}
-        //
         return 0; // この行は変更しなければならない。
     }
 
@@ -303,10 +303,10 @@ public class Frequencer implements FrequencerInterface{
 	    }
 	    
 	    if( targetCompare(suffixArray[x], start, end) != 0 && flag == true ){
-		return x;
+			return x;
 	    }
 	}
-	
+	if(flag == true) return suffixArray.length;//revise
 	
         //
 	return -1;

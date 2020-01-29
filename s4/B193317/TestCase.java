@@ -39,28 +39,29 @@ public class TestCase {
 		    c = 0;
 	    System.out.println("checking Frequencer");
 	    myObject = new Frequencer();
-	    freq = myObject.frequency();
+	    freq = myObject.frequency();//OK
 	    if(-1 != freq) { System.out.println("frequency() should return -1, when target is not set, but returns "+freq); c++; }
 	    myObject = new Frequencer();
 	    myObject.setTarget("".getBytes());
-	    freq = myObject.frequency();
+	    freq = myObject.frequency();//OK
 	    if(-1 != freq) { System.out.println("frequency() should return -1, when target is empty, but return "+freq); c++; }
 	    myObject = new Frequencer();
 	    myObject.setSpace("AAA".getBytes());
+		freq = myObject.frequency();//OK
 	    if(-1 != freq) { System.out.println("frequency() for AAA should return -1, when target is  not set. But it returns  "+freq); c++; }	
 	    myObject = new Frequencer();
 	    myObject.setSpace("AAA".getBytes());
 	    myObject.setTarget("".getBytes());
-	    freq = myObject.frequency();
+	    freq = myObject.frequency();//OK
 	    if(-1 != freq) { System.out.println("frequency() for AAA should return -1, when taget empty string. But it returns "+freq); c++; }
 	    myObject = new Frequencer();
 	    myObject.setTarget("A".getBytes());
-	    freq = myObject.frequency();	   
+	    freq = myObject.frequency();//OK
  	    if(0 != freq) { System.out.println("frequency() for not set, should return 0, when taget is not empty. But it returns "+freq); c++; }
 	    myObject = new Frequencer();
 	    myObject.setSpace("".getBytes());
 	    myObject.setTarget("A".getBytes());
-	    freq = myObject.frequency();	   
+	    freq = myObject.frequency();
  	    if(0 != freq) { System.out.println("frequency() for empty space, should return 0, when taget is not empty. But it returns "+freq); c++; }
 	    myObject = new Frequencer();
 	    myObject.setSpace("AAA".getBytes());
