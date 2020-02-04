@@ -118,8 +118,7 @@ public class Frequencer implements FrequencerInterface{
 	
     }
 
-    //For Refactering
-	/*
+    /*/For Refactering
     private void mySort(int[] array, int left,int right){
 	 int pivot;
 	 if (suffixCompare(suffixArray[left],suffixArray[right]) == -1) {
@@ -147,7 +146,7 @@ public class Frequencer implements FrequencerInterface{
 	temp = x;
 	x = y;
 	y = temp;
-    }*/
+    }/*/
 
     // Suffix Arrayを用いて、文字列の頻度を求めるコード
     // ここから、指定する範囲のコードは変更してはならない。
@@ -301,9 +300,8 @@ public class Frequencer implements FrequencerInterface{
 	}
 	if(flag == true) return suffixArray.length;//revise
 	
-        //
 	return -1;
-        //return suffixArray.length; // この行は変更しなければならない、       
+       
     }
 
 

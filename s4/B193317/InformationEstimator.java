@@ -117,6 +117,7 @@ public class InformationEstimator implements InformationEstimatorInterface{
 			}
        		}
        	}
+	
 		if(myTarget.length > 0)return infoQuant[myTarget.length-1][0];
 		return 0.0;
     }  
