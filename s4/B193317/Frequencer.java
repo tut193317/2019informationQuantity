@@ -100,6 +100,7 @@ public class Frequencer implements FrequencerInterface{
         //                                            
         // ここに、int suffixArrayをソートするコードを書け。
         // 　順番はsuffixCompareで定義されるものとする。
+	/*//O(n^2)
 	int temp = -1;
 	
 	for(int i = 0; i<space.length; i++){
@@ -111,42 +112,36 @@ public class Frequencer implements FrequencerInterface{
 		}
 	    }
 	}
-	
-	//mySort(suffixArray,0,suffixArray.length-1);
+	*/
+
+	//O(n*log(n))
+	mySort(0,suffixArray.length-1);
 
 	//
 	
     }
 
-    /*/For Refactering
-    private void mySort(int[] array, int left,int right){
-	 int pivot;
-	 if (suffixCompare(suffixArray[left],suffixArray[right]) == -1) {
-	     pivot = partition(array, left, right);
-	     mySort(array, left, pivot-1);   // pivotを境に再帰的にクイックソート
-	     mySort(array, pivot+1, right);
-	 }
+    //refactor
+    private void mySort(int left,int right){
+	if (left >= right) {
+            return;
+        }
+	int p = suffixArray[(left + right) / 2];
+        int i = left, j = right, tmp;
+        while (i <= j) {
+            while (suffixCompare(suffixArray[i], p) < 0) i++;
+            while (suffixCompare(suffixArray[j], p) > 0) j--;
+            if (i <= j) {
+                tmp = suffixArray[i];
+                suffixArray[i] = suffixArray[j];
+                suffixArray[j] = tmp;
+                i++;
+                j--;
+            }
+        }
+        mySort(left, j);
+        mySort(i, right);
     }
-    private int partition (int array[], int left, int right) {
-	int i, j, pivot;
-	i = left;
-	j = right + 1;
-	pivot = left;   // 先頭要素をpivotとする
-	do {
-	    do { i++; } while (array[i] < array[pivot]);
-	    do { j--; } while (array[pivot] < array[j]);
-	    // pivotより小さいものを左へ、大きいものを右へ
-	    if (i < j) { swap(array[i], array[j]); }
-	} while (i < j);
-	swap(array[pivot], array[j]);   //pivotを更新
-	return j;
-    }
-    private void swap (int x, int y) {
-	int temp;    // 値を一時保存する変数
-	temp = x;
-	x = y;
-	y = temp;
-    }/*/
 
     // Suffix Arrayを用いて、文字列の頻度を求めるコード
     // ここから、指定する範囲のコードは変更してはならない。
@@ -206,9 +201,7 @@ public class Frequencer implements FrequencerInterface{
         //
         // ここに比較のコードを書け
 
-	if(mySpace.length-i < k-j){
-	    return -1;
-	}
+	
 
 	int length = Math.min(mySpace.length-i , k-j);
 
@@ -219,6 +212,10 @@ public class Frequencer implements FrequencerInterface{
 	    }else if(diff < 0){
 		return -1;
 	    }
+	}
+
+	if(mySpace.length-i < k-j){
+	    return -1;
 	}
         return 0; // この行は変更しなければならない。
     }
@@ -249,7 +246,9 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is "Ho ", it will return 6.                
         //                                                                          
         // ここにコードを記述せよ。
-	
+
+	//O(n)
+	/*
 	for(int x = 0; x < suffixArray.length; x++){
 	    if( targetCompare(suffixArray[x], start, end) == 0 ){
 		return x;
@@ -258,7 +257,21 @@ public class Frequencer implements FrequencerInterface{
 	
         //
 	return -1;
-        //return suffixArray.length; //このコードは変更しなければならない。          
+	*/
+	//O(log(n))
+	int i = 0, j = suffixArray.length - 1;
+
+        while (i <= j) {
+            int x = (i + j) / 2;
+            int ret = targetCompare(suffixArray[x], start, end);
+            if (ret > 0) j = x - 1;
+            else if (ret < 0) i = x + 1;
+            else if (x == 0) return x;
+            else if (targetCompare(suffixArray[x - 1], start, end) != 0) return x;
+            else j = x - 1;
+        }
+	if (targetCompare(suffixArray[0], start, end) == 0) return suffixArray.length-1;
+        return suffixArray.length;
     }
 
     private int subByteEndIndex(int start, int end) {
@@ -285,7 +298,9 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".    
         //                                                                   
         //　ここにコードを記述せよ
-	
+
+	//O(n)
+	/*
 	boolean flag = false;
 	
 	for(int x = 0; x < suffixArray.length; x++){
@@ -301,6 +316,21 @@ public class Frequencer implements FrequencerInterface{
 	if(flag == true) return suffixArray.length;//revise
 	
 	return -1;
+	*/
+
+        int i = 0, j = suffixArray.length - 1;
+
+        while (i <= j) {
+            int x = (i + j) / 2;
+            int ret = targetCompare(suffixArray[x], start, end);
+            if (ret > 0) j = x - 1;
+            else if (ret < 0) i = x + 1;
+            else if (x + 1 == suffixArray.length) return suffixArray.length;
+            else if (targetCompare(suffixArray[x + 1], start, end) != 0) return x + 1;
+            else    i = x + 1;
+        }
+
+	return suffixArray.length;
        
     }
 
